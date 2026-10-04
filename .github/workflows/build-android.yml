@@ -1,0 +1,56 @@
+name: Build MMY.YE Android
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Prepare web files
+        run: npm run prepare:www
+
+      - name: Add Android platform
+        run: npx cap add android
+
+      - name: Prepare Android
+        run: npm run android:prepare
+
+      - name: Generate app icons
+        run: npm run icons
+
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      - name: Build APK
+        run: |
+          chmod +x android/gradlew
+          cd android
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: MMY-YE-Android-APK
+          path: android/app/build/outputs/apk/debug/*.apk
