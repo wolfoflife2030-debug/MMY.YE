@@ -1,0 +1,11 @@
+{
+  "appId": "org.mediaplatform.app",
+  "appName": "MMY.YE",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}
